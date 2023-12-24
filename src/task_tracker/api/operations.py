@@ -5,6 +5,7 @@ from src.task_tracker.models.schemas import EmployeeBase, TaskBase, TaskCreate
 from src.task_tracker import tables
 from fastapi import Depends
 from sqlalchemy.orm import Session
+
 from src.task_tracker.services.operations import TaskService
 from src.task_tracker.tables import Task
 
@@ -16,12 +17,12 @@ def read_root():
     return {"200 OK": "Проект запущен"}
 
 
-
 # CRUD для Tasks
 @router.get("/tasks/")
 def read_tasks(service: TaskService = Depends()):
     """Получаем список существующих задач"""
     return service.get_list()
+
 
 @router.post("/task/create")
 def create_task(
@@ -29,3 +30,11 @@ def create_task(
         service: TaskService = Depends()
 ):
     return service.create_task(task_data)
+
+
+@router.get("/task/{task_id}")
+def read_task(
+        task_id: int,
+        service: TaskService = Depends()
+):
+    return service.get_task(task_id)

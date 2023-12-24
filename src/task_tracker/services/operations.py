@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from src.task_tracker import tables
@@ -16,6 +16,13 @@ class TaskService:
     def get_list(self) -> List[tables.Task]:
         """Получение списка задач"""
         return self.db.query(tables.Task).all()
+
+    def get_task(self, task_id: int):
+        """Получение информации о задаче по id"""
+        task_value = self.db.query(tables.Task).filter(tables.Task.id == task_id).first()
+        if not task_value:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        return task_value
 
     def create_task(self, task: TaskCreate) -> tables.Task:
         """Создание задачи"""
