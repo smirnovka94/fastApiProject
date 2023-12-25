@@ -1,13 +1,11 @@
-from typing import List
 from fastapi import APIRouter
-from src.task_tracker.database import get_db
-from src.task_tracker.models.schemas import EmployeeBase, TaskBase, TaskCreate
-from src.task_tracker import tables
 from fastapi import Depends
-from sqlalchemy.orm import Session
+from fastapi import Response
+from fastapi import status
 
+from src.task_tracker.models.schemas import TaskCreate, TaskUpdate
 from src.task_tracker.services.operations import TaskService
-from src.task_tracker.tables import Task
+
 
 router = APIRouter()
 
@@ -38,3 +36,21 @@ def read_task(
         service: TaskService = Depends()
 ):
     return service.get_task(task_id)
+
+
+@router.put("/task/{task_id}")
+def update_task(
+        task_id: int,
+        task_data: TaskUpdate,
+        service: TaskService = Depends()
+):
+    return service.update_task(task_id, task_data)
+
+
+@router.delete("/task/{task_id}")
+def delete_task(
+        task_id: int,
+        service: TaskService = Depends()
+):
+    service.delete_task(task_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
