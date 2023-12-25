@@ -16,8 +16,8 @@ class TaskBase(BaseModel):
     time_limit_hours: int
     # Валидация status
     status: Optional[StatusEnum]
-    related_task: int or None = None
-    employee: int or None = None
+    related_task: Optional[int] = None
+    employee: Optional[int] = None
 
 
 class TaskCreate(TaskBase):
@@ -31,7 +31,7 @@ class TaskUpdate(TaskBase):
 class EmployeeBase(BaseModel):
     first_name: str
     second_name: str
-    patronymic_name: str or None = None
+    patronymic_name: Optional[str] = None
     position: str
 
 
