@@ -56,6 +56,13 @@ def delete_task(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+@router.get("/tasks/important")
+def get_important_tasks(service: TaskService = Depends()):
+    """Получаем список важных задач"""
+    items = service.get_important_tasks()
+    return items
+
+
 # CRUD для Employees
 @router.get("/employees/")
 def read_employee(service: EmployeeService = Depends()):
@@ -95,3 +102,9 @@ def delete_employee(
 ):
     service.delete_employee(employee_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.get("/employees/busy")
+def get_busy_employees(service: EmployeeService = Depends()):
+    """Получаем список занятых сотрудников"""
+    items = service.get_busy_employees()
+    return items

@@ -7,7 +7,7 @@ class StatusEnum(str, Enum):
     """Варианты статуса задач"""
     active = "free"
     working = "active"
-    stoped = "stoped"
+    stoped = "stopped"
     closed = "closed"
 
 

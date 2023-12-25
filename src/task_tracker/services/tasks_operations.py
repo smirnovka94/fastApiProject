@@ -51,3 +51,70 @@ class TaskService:
 
         self.db.delete(task)
         self.db.commit()
+
+    def get_important_tasks(self, ):
+        """Получаем список важных задач"""
+
+        employees = self.db.query(tables.Employee).all()
+        all_tasks = self.db.query(tables.Task).all()
+        sub_tasks = (self.db.query(tables.Task)
+                     .filter(tables.Task.related_task != None)
+                     .all()
+                     )
+
+        id_parrent_tasks = []
+        id_employee_with_parrent_tasks = []
+
+        for sub_task in sub_tasks:
+            # Получаем id родительской задачи
+            id_parrent_tasks.append(sub_task.related_task)
+
+        for task in all_tasks:
+            if (task.id in id_parrent_tasks) and (task.employee != None):
+                id_employee_with_parrent_tasks.append(task.employee)
+
+        # Самый свободный сотрудник
+        count_tasks = 100000000
+        count_tasks_p = 100000000
+        for employee in employees:
+            # Ищем количество задач у сотрудника
+            tasks = (self.db.query(tables.Task)
+                     .filter(tables.Task.employee == employee.id)
+                     .all()
+                     )
+            employee.tasks = len(tasks)
+            # Находим наименее занятого
+            if int(employee.tasks) < count_tasks:
+                count_tasks = len(tasks)
+                free_employee = employee
+
+            # Ищем незагруженного сотрудника с родительскими задачами
+            if employee.id in id_employee_with_parrent_tasks:
+                if int(employee.tasks) < count_tasks_p:
+                    count_tasks_p = employee.tasks
+                    free_employee_with_parrent_tasks = employee
+
+        # Ищем наиболее подходящего кандидата
+        if int(free_employee_with_parrent_tasks.tasks) <= int(free_employee.tasks) + 2:
+            ideal_employee = free_employee_with_parrent_tasks
+        else:
+            ideal_employee = free_employee
+
+        # Получаем свободные задачи
+        important_tasks = []
+        tasks_active = (self.db.query(tables.Task)
+                        .filter(tables.Task.status == "free")
+                        .all()
+                        )
+        for task in tasks_active:
+            if task.id in id_parrent_tasks:
+                if ideal_employee.patronymic_name == None:
+                    task.employees = [ideal_employee.first_name, ideal_employee.second_name]
+                else:
+                    task.employees = [ideal_employee.first_name, ideal_employee.second_name,
+                                      ideal_employee.patronymic_name]
+                filter_task = {"Важная задача": task.name, "Срок": task.time_limit_hours,
+                               "ФИО сотрудника": task.employees}
+                important_tasks.append(filter_task)
+
+        return important_tasks
