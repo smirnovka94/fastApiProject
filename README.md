@@ -35,9 +35,16 @@ pip install -r src\requirements.txt
 ### создать файл <.env> из <.env.template>
 Внутри .env заменить password на пароль Postgress
 
+### копируем значение DB_POSTGRES= в файл alembic.ini. заполняем параметр sqlalchemy.url = 
+
 ### добавляем текущую директорию в переменную среды
 ```
 export PYTHONPATH="$PYTHONPATH:$PWD"
+```
+### Создаем миграции
+```
+alembic revision --autogenerate -m "Initial migration"
+alembic upgrade head        
 ```
 ### Запуcтить приложение
 ```
