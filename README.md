@@ -35,7 +35,11 @@ pip install -r src\requirements.txt
 ### создать файл <.env> из <.env.template>
 Внутри .env заменить password на пароль Postgress
 
-### Запуcтить приложения
+### добавляем текущую директорию в переменную среды
 ```
-python .\src\app.py
+export PYTHONPATH="$PYTHONPATH:$PWD"
+```
+### Запуcтить приложение
+```
+python src\app.py
 ```
