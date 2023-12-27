@@ -7,7 +7,9 @@ from src.task_tracker.models.schemas import TaskCreate, TaskUpdate, EmployeeUpda
 from src.task_tracker.services.tasks_operations import TaskService
 from src.task_tracker.services.employees_operations import EmployeeService
 
-router = APIRouter()
+router = APIRouter(
+    tags=["CRUD"],
+)
 
 
 @router.get("/")
@@ -56,13 +58,6 @@ def delete_task(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.get("/tasks/important")
-def get_important_tasks(service: TaskService = Depends()):
-    """Получаем список важных задач"""
-    items = service.get_important_tasks()
-    return items
-
-
 # CRUD для Employees
 @router.get("/employees/")
 def read_employee(service: EmployeeService = Depends()):
@@ -108,3 +103,11 @@ def get_busy_employees(service: EmployeeService = Depends()):
     """Получаем список занятых сотрудников"""
     items = service.get_busy_employees()
     return items
+
+@router.delete("/employee/{employee_id}")
+def delete_employee(
+        employee_id: int,
+        service: EmployeeService = Depends()
+):
+    service.delete_employee(employee_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
