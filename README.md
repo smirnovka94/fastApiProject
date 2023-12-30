@@ -37,9 +37,14 @@ pip install -r src\requirements.txt
 
 ### копируем значение DB_POSTGRES= в файл alembic.ini. заполняем параметр sqlalchemy.url = 
 
-### добавляем текущую директорию в переменную среды
+### добавляем текущую директорию в переменную среды 
+для Linux
 ```
 export PYTHONPATH="$PYTHONPATH:$PWD"
+```
+для Windows
+```
+set PYTHONPATH=%PYTHONPATH%;%CD%
 ```
 ### Создаем миграции
 ```
@@ -48,5 +53,5 @@ alembic upgrade head
 ```
 ### Запуcтить приложение
 ```
-python src\app.py
+venv\Scripts\python.exe src\app.py
 ```
